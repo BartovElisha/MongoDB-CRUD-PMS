@@ -54,6 +54,23 @@ async function main() {
         await readBug(client, "Flash Reading");
         console.log("---------- End of Data ----------");
 
+        // Update Project Information
+        //await updateProjectName(client,"SmartEye 985","Spectrometer 985");
+
+        // Update Project Type
+        await updateProjectType(client,"Spectrometer 985","629c62ab7c0d0e240c27db68");
+        await updateProjectType(client,"40/40D","629c62ab7c0d0e240c27db68");
+        await updateProjectType(client,"30/30D","629c62ab7c0d0e240c27db68");
+        await updateProjectType(client,"Resume","629c62ab7c0d0e240c27db6c");
+        await updateProjectType(client,"Chess Board","629c62ab7c0d0e240c27db6b");
+        await updateProjectType(client,"Home Design","629c62ab7c0d0e240c27db6a");
+
+        // Update Project Add Project Bugs
+        await updateProjectAddBugs(client,"Spectrometer 985",["629c62ab7c0d0e240c27db73","629c62ab7c0d0e240c27db74"]);
+
+        // Update Project Remove Project Bugs
+        //await updateProjectRemoveBugs(client,"Spectrometer 985",["629c62ab7c0d0e240c27db73","629c62ab7c0d0e240c27db74"]);
+
         // Delete Projects
         // await deleteProjectType(client, "Emerson Project");
         // await deleteProjectType(client, "ARTS Project");
@@ -180,8 +197,40 @@ async function readBug(client,bugName) {
 }
 
 // ------------------ Update ------------------
-async function updateProjectData(client,project) {
+async function updateProjectName(client,oldProjectName,newProjectName) {
+    const result = await client
+    .db("PMS")
+    .collection("Projects")
+    .updateOne({"projectName":oldProjectName},{$set:{"projectName":newProjectName}});
 
+    console.log(result);
+}
+
+async function updateProjectType(client,projectName,projectTypeId) {
+    const result = await client
+    .db("PMS")
+    .collection("Projects")
+    .updateOne({"projectName":projectName},{$set:{"_projectTypeId":projectTypeId}});
+
+    console.log(result);
+}
+
+async function updateProjectAddBugs(client,projectName,projectBugIdArr) {
+    const result = await client
+    .db("PMS")
+    .collection("Projects")
+    .updateOne({"projectName":projectName},{$set:{"_projectBugId":projectBugIdArr}});
+
+    console.log(result);
+}
+
+async function updateProjectRemoveBugs(client,projectName,projectBugIdArr) {
+    const result = await client
+    .db("PMS")
+    .collection("Projects")
+    .updateOne({"projectName":projectName},{$unset:{"_projectBugId":projectBugIdArr}});
+
+    console.log(result);
 }
 
 // ------------------ Delete ------------------
